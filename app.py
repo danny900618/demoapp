@@ -22,8 +22,6 @@ db = SQLAlchemy(app)
 # 建立 Swagger 實例
 swagger = Swagger(app)
 
-# 建立資料表模型
-
 
 class User(db.Model):
     __tablename__ = 'users'
