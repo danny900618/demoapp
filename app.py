@@ -3,9 +3,11 @@ from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flasgger import Swagger
 
+
 # 建立 Flask 應用程式
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 設定資料庫連線參數
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'.format(
     user='admin',
@@ -21,13 +23,16 @@ db = SQLAlchemy(app)
 swagger = Swagger(app)
 
 # 建立資料表模型
+
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     email = db.Column(db.String(50))
 
-# # 建立 API 資源
+
+# 建立 API 資源
 class UsersResource(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -35,8 +40,8 @@ class UsersResource(Resource):
         self.parser.add_argument('name', type=str)
         self.parser.add_argument('email', type=str)
         super(UsersResource, self).__init__()
-        
-    def get(self):#已完成
+
+    def get(self):  # 已完成
         """
         Get a list of all users
         ---
@@ -70,8 +75,8 @@ class UsersResource(Resource):
             return jsonify(user_list)
         except:
             return {'message': 'error'}, 500
-    
-    def post(self):#已完成
+
+    def post(self):  # 已完成
         """
         說明: 新增使用者資料
         ---
@@ -108,7 +113,8 @@ class UsersResource(Resource):
             return message
         except:
             return {'message': 'error'}, 500
-    def delete(self):#已完成
+
+    def delete(self):  # 已完成
         """
         說明: 新增使用者資料
         ---
@@ -140,8 +146,9 @@ class UsersResource(Resource):
                 message = {'message': '此ID不存在'}, 404
             return message
         except:
-            return {'message': 'error'}, 500  
-    def put(self):#已完成
+            return {'message': 'error'}, 500
+
+    def put(self):  # 已完成
         """
         說明: 修改使用者資料
         ---
@@ -169,9 +176,10 @@ class UsersResource(Resource):
         try:
             args = self.parser.parse_args()
             user = User.query.filter(User.id == args['id']).first()
-            #確認使用者存在
+            # 確認使用者存在
             if user:
-                email_only = User.query.filter(User.email == args['email']).first()
+                email_only = User.query.filter(
+                    User.email == args['email']).first()
                 # 確認信箱唯一
                 if user == email_only or not email_only:
                     user.email = args['email']
@@ -183,13 +191,14 @@ class UsersResource(Resource):
                         'email': user.email
                     }, 200
                 else:
-                    message = {'message': '信箱名稱重複'},404
+                    message = {'message': '信箱名稱重複'}, 404
             else:
                 message = {'message': '此ID不存在'}, 404
             return message
         except:
             return {'message': 'error'}, 500
-    
+
+
 # # 註冊 API 路由
 api = Api(app)
 api.add_resource(UsersResource, '/users')
