@@ -1,0 +1,32 @@
+<Deployment YAML>
+---
+<Service YAML>
+
+
+eksctl create nodegroup \
+  --cluster k8s_demoapp_rds \
+  --region us-east-1 \
+  --name demoapp-nodegroup \
+  --node-ami-family ami-family \
+  --node-type m5.large \
+  --nodes 3 \
+  --nodes-min 2 \
+  --nodes-max 4 \
+  --ssh-access \
+  --ssh-public-key my-key
+
+  eksctl create nodegroup --cluster=k8s_demoapp_rds --region us-east-1 --name demoapp-nodegroup
+
+  eksctl create nodegroup --cluster k8s_demoapp_rds \
+--node-type t2.micro \
+--nodes 1 \
+--ssh-access \
+--ssh-public-key ~/.ssh/id_rsa.pub \
+--node-volume-size 10 \
+--vpc-id vpc-09e5073bcd84d6dbb \
+--subnets subnet-06a57b87ce0ba11c4,subnet-0ef1c86806f8e41c8, subnet-05d701f631366b83a, subnet-042a456722b5179f1, subnet-0e0a04646801c3648 \
+--security-group sg-0bf24cb5e5f004ad4
+
+eksctl create nodegroup --cluster k8s_demoapp_rds --node-type t2.micro --nodes 1 --ssh-access --ssh-public-key ~/.ssh/id_rsa.pub --node-volume-size 10 --subnets subnet-06a57b87ce0ba11c4,subnet-0ef1c86806f8e41c8, subnet-05d701f631366b83a, subnet-042a456722b5179f1, subnet-0e0a04646801c3648 --security-group sg-0bf24cb5e5f004ad4
+ --vpc-id vpc-09e5073bcd84d6dbb
+

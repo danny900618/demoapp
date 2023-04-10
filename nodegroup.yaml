@@ -1,0 +1,74 @@
+# apiVersion: eksctl.io/v1alpha5
+# kind: ClusterConfig
+
+# metadata:
+#   name: k8s_demoapp_rds
+#   region: us-east-1
+
+# nodeGroups:
+#   - name: demoapp-ng-1
+#     instanceType: t3.medium
+#     minSize: 1
+#     maxSize: 3
+#     desiredCapacity: 2
+#     ssh:
+#       allow: true
+#       publicKeyPath: ~/.ssh/id_rsa.pub
+
+# apiVersion: eksctl.io/v1alpha5
+# kind: ClusterConfig
+
+# metadata:
+#   name: k8s_demoapp_rds
+#   region: us-east-1
+
+# nodeGroups:
+#   - name: demoapp-ng-1
+#     instanceType: t3.medium
+#     minSize: 1
+#     maxSize: 3
+#     desiredCapacity: 2
+#     ssh:
+#       allow: true
+#       publicKeyPath: ~/.ssh/id_rsa.pub
+#     labels:
+#       nodegroup-type: demoapp
+#     tags:
+#       nodegroup-type: demoapp
+#     availabilityZones:
+#       - us-east-1a
+#       - us-east-1b
+#     iam:
+#       withAddonPolicies:
+#         autoScaler: true
+#         externalDNS: true
+#         albIngress: true
+
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: k8s_demoapp_rds
+  region: us-east-1
+
+vpc:
+  id: vpc-09e5073bcd84d6dbb
+  subnets:
+    private:
+      us-east-1a: 
+        id: subnet-06a57b87ce0ba11c4
+      us-east-1b: 
+        id: subnet-0ef1c86806f8e41c8
+      us-east-1c: 
+        id: subnet-042a456722b5179f1
+  securityGroup: sg-0bf24cb5e5f004ad4
+
+nodeGroups:
+  - name: demoapp-ng-1
+    instanceType: t3.medium
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 2
+    ssh:
+      allow: true
+      publicKeyPath: ~/.ssh/id_rsa.pub

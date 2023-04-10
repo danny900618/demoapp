@@ -2,7 +2,13 @@ from flask import Flask, jsonify
 from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flasgger import Swagger
+import configparser
 
+# 建立 ConfigParser
+config = configparser.ConfigParser()
+
+# 讀取 INI 設定檔
+config.read('config.ini')
 
 # 建立 Flask 應用程式
 app = Flask(__name__)
@@ -10,11 +16,11 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 設定資料庫連線參數
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'.format(
-    user='admin',
-    password='rootroot',
-    host='database-4.cyytgedqlpjr.us-east-1.rds.amazonaws.com',
-    port=3306,
-    database='table4'
+    user=config['db']['user'],
+    password=config['db']['password'],
+    host=config['db']['host'],
+    port=config['db']['port'],
+    database=config['db']['database']
 )
 
 db = SQLAlchemy(app)
@@ -39,7 +45,7 @@ class UsersResource(Resource):
         self.parser.add_argument('email', type=str)
         super(UsersResource, self).__init__()
 
-    def get(self):  # 已完成
+    def get(self):
         """
         Get a list of all users
         ---
@@ -74,7 +80,7 @@ class UsersResource(Resource):
         except:
             return {'message': 'error'}, 500
 
-    def post(self):  # 已完成
+    def post(self):
         """
         說明: 新增使用者資料
         ---
@@ -99,7 +105,6 @@ class UsersResource(Resource):
         """
         try:
             args = self.parser.parse_args()
-            print(args)
             user = User.query.filter(User.email == args['email']).first()
             if not user:
                 new_user = User(name=args['name'], email=args['email'])
@@ -146,7 +151,7 @@ class UsersResource(Resource):
         except:
             return {'message': 'error'}, 500
 
-    def put(self):  # 已完成
+    def put(self):
         """
         說明: 修改使用者資料
         ---
@@ -178,8 +183,8 @@ class UsersResource(Resource):
             if user:
                 email_only = User.query.filter(
                     User.email == args['email']).first()
-                # 確認信箱唯一
-                if user == email_only or not email_only:
+                # 確認信箱是否重複
+                if email_only is None:
                     user.email = args['email']
                     user.name = args['name']
                     db.session.commit()
@@ -197,7 +202,7 @@ class UsersResource(Resource):
             return {'message': 'error'}, 500
 
 
-# # 註冊 API 路由
+# 註冊 API 路由
 api = Api(app)
 api.add_resource(UsersResource, '/users')
 
