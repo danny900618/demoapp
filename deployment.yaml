@@ -17,4 +17,4 @@ spec:
       - name: myapp
         image: danny900618/demoapp:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
